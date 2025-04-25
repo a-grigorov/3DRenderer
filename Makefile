@@ -2,13 +2,14 @@ CC = gcc
 STD = c99
 
 build:
-	gcc -Wall -std=c99 ./src/*.c -o renderer -I/opt/homebrew/include/ -L/opt/homebrew/lib -lSDL3
+	${CC} -Wall -std=${STD} ./src/*.c -o renderer -I/opt/homebrew/include/ -L/opt/homebrew/lib -lSDL3
 
 run:
 	./renderer
 
 buildrun:
-	gcc -Wall -std=c99 ./src/*.c -o renderer -I/opt/homebrew/include/ -L/opt/homebrew/lib -lSDL3 run
+	${CC} -Wall -std=${STD} ./src/*.c -o renderer -I/opt/homebrew/include/ -L/opt/homebrew/lib -lSDL3
+	./renderer
 
 clean:
 	rm renderer

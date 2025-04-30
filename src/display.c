@@ -54,20 +54,6 @@ bool initialize_window(void) {
 	return true;
 }
 
-void setup(void) {
-	// Allocate memory for collor buffer
-	color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
-	
-	// Allocate rendering buffer
-	color_buffer_texture = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_RGBA8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		window_width,
-		window_height
-	);
-}
-
 void render_color_buffer(void) {
 	SDL_UpdateTexture(
 		color_buffer_texture,

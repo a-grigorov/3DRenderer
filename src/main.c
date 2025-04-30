@@ -7,6 +7,20 @@
 
 bool is_running = false;
 
+void setup(void) {
+	// Allocate memory for collor buffer
+	color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
+	
+	// Allocate rendering buffer
+	color_buffer_texture = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_RGBA8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		window_width,
+		window_height
+	);
+}
+
 void process_input(void) {
 	SDL_Event event;
 	SDL_PollEvent(&event);

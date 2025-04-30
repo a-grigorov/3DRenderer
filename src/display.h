@@ -12,7 +12,6 @@ extern uint32_t* color_buffer;
 extern SDL_Texture* color_buffer_texture;
 
 bool initialize_window(void);
-void setup(void);
 void destroy_window(void);
 void draw_grid(uint32_t lineColor);
 void draw_pixel(int x, int y, uint32_t color);

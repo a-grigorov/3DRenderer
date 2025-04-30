@@ -34,6 +34,20 @@ void render(void) {
 	draw_grid(0x0000FFFF);
 	draw_rect(100, 100, 200, 100, 0x00FF00FF);
 
+	const int rect_pos_x = 80;
+	const int rect_pos_y = 80;
+
+	const int rect_width = 40;
+	const int rect_height = 40;
+
+	for (int i = rect_pos_x; i < rect_pos_x + rect_width; i++)
+	{
+		for (int j = rect_pos_y; j < rect_pos_y + rect_height; j++)
+		{
+			draw_pixel(i, j, 0xFF00FFFF);
+		}
+	}
+
 	render_color_buffer();
 	clear_color_buffer(0xFFFF00FF);
 

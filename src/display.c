@@ -122,6 +122,14 @@ void draw_grid(uint32_t lineColor) {
 	}
 }
 
+void draw_pixel(int x, int y, uint32_t color) {
+	if (x < 0 || x >= window_width || y < 0 || y >= window_height) {
+		return;
+	}
+
+	color_buffer[window_width * y + x] = color;
+}
+
 void draw_rect(int pos_x, int pos_y, int width, int height, uint32_t color) {
 	width = pos_x + width;
 	height = pos_y + height;

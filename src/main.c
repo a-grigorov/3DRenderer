@@ -10,6 +10,7 @@ const int N_POINTS = 9 * 9 * 9;
 
 bool is_running = false;
 float fov_scale = 250.0f;
+vec3_t camera_position = { 0, 0, -2 };
 vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
 
@@ -64,8 +65,15 @@ void process_input(void) {
 	}
 }
 
-vec2_t project(vec3_t point) {
-	vec2_t projected_point = { point.x, point.y };
+vec2_t orthographic_projection(vec3_t point) {
+	vec2_t projected_point = { point.x * fov_scale, point.y * fov_scale };
+	return projected_point;
+}
+
+vec2_t perspective_projection(vec3_t point) {
+	vec2_t projected_point;
+	projected_point.x = (point.x * fov_scale) / (point.z);
+	projected_point.y = (point.y * fov_scale) / (point.z);
 	return projected_point;
 }
 
@@ -73,9 +81,14 @@ void update(void) {
 	for (size_t i = 0; i < N_POINTS; i++)
 	{
 		vec3_t point = cube_points[i];
-		vec2_t projected_point = project(point);
-		projected_point.x = (projected_point.x * fov_scale) + (window_width / 2);
-		projected_point.y = (projected_point.y * fov_scale) + (window_height / 2);
+
+		point.x += camera_position.x;
+		point.y += camera_position.y;
+		point.z += camera_position.z;
+
+		vec2_t projected_point = perspective_projection(point);
+		projected_point.x = projected_point.x + (window_width / 2);
+		projected_point.y = projected_point.y + (window_height / 2);
 		projected_points[i] = projected_point;
 	}
 }

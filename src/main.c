@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 #include "vector.h"
+#include <math.h>
 
 const int N_POINTS = 9 * 9 * 9;
 
@@ -65,6 +66,26 @@ void process_input(void) {
 	}
 }
 
+vec3_t rotate_around_z(vec3_t point, float angle) {
+	vec3_t rotatedPoint = {
+		point.x * cos(angle) - point.y * sin(angle),
+		point.x * sin(angle) + point.y * cos(angle),
+		point.z
+	};
+
+	return rotatedPoint;
+}
+
+vec3_t rotate_around_y(vec3_t point, float angle) {
+	vec3_t rotatedPoint = {
+		point.x * cos(angle) - point.z * sin(angle),
+		point.y,
+		point.x * sin(angle) + point.z * cos(angle)
+	};
+
+	return rotatedPoint;
+}
+
 vec2_t orthographic_projection(vec3_t point) {
 	vec2_t projected_point = { point.x * fov_scale, point.y * fov_scale };
 	return projected_point;
@@ -78,14 +99,21 @@ vec2_t perspective_projection(vec3_t point) {
 }
 
 void update(void) {
+
+	float angle = SDL_GetTicks() * 0.001f; // Rotate based on time
+
 	for (size_t i = 0; i < N_POINTS; i++)
 	{
 		vec3_t point = cube_points[i];
+
+		// Rotate the point around the Z-axis
+		point = rotate_around_y(point, angle);
 
 		point.x += camera_position.x;
 		point.y += camera_position.y;
 		point.z += camera_position.z;
 
+		// Apply perspective projection
 		vec2_t projected_point = perspective_projection(point);
 		projected_point.x = projected_point.x + (window_width / 2);
 		projected_point.y = projected_point.y + (window_height / 2);
@@ -99,7 +127,7 @@ void render(void) {
 	for (size_t i = 0; i < N_POINTS; i++)
 	{
 		vec2_t point = projected_points[i];
-		draw_rect(point.x, point.y, 4, 4, 0xFFFF00FF);
+		draw_rect(point.x, point.y, 5, 5, 0xFFFF00FF);
 	}
 
 	render_color_buffer();

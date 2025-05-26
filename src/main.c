@@ -16,7 +16,8 @@ vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
 
 void setup_cube_points(void) {
-	float step = 2 / (float)9;
+	const int cube_size = 9; // 3x3x3 grid
+	float step = 2 / (float)(cube_size - 1); // Step size to fill the range [-1, 1]
 	size_t index = 0;
 
 	for (size_t x = 0; x < 9; x++) {

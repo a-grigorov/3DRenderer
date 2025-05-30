@@ -7,7 +7,8 @@
 #include "vector.h"
 #include <math.h>
 
-const int N_POINTS = 9 * 9 * 9;
+const int CUBE_SIZE = 9; // 3x3x3 grid
+const int N_POINTS = CUBE_SIZE * CUBE_SIZE * CUBE_SIZE; // Total number of points in the cube
 
 bool is_running = false;
 float fov_scale = 250.0f;
@@ -16,13 +17,12 @@ vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
 
 void setup_cube_points(void) {
-	const int cube_size = 9; // 3x3x3 grid
-	float step = 2 / (float)(cube_size - 1); // Step size to fill the range [-1, 1]
+	float step = 2 / (float)(CUBE_SIZE - 1); // Step size to fill the range [-1, 1]
 	size_t index = 0;
 
-	for (size_t x = 0; x < 9; x++) {
-		for (size_t y = 0; y < 9; y++) {
-			for (size_t z = 0; z < 9; z++) {
+	for (size_t x = 0; x < CUBE_SIZE; x++) {
+		for (size_t y = 0; y < CUBE_SIZE; y++) {
+			for (size_t z = 0; z < CUBE_SIZE; z++) {
 				vec3_t point;
 				point.x = (x * step) - 1;
 				point.y = (y * step) - 1;

@@ -1,11 +1,10 @@
 #include "display.h"
+#include "vector.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <SDL3/SDL.h>
-#include "vector.h"
-#include <math.h>
 
 const int CUBE_SIZE = 9; // 3x3x3 grid
 const int N_POINTS = CUBE_SIZE * CUBE_SIZE * CUBE_SIZE; // Total number of points in the cube
@@ -67,26 +66,6 @@ void process_input(void) {
 	}
 }
 
-vec3_t rotate_around_z(vec3_t point, float angle) {
-	vec3_t rotatedPoint = {
-		point.x * cos(angle) - point.y * sin(angle),
-		point.x * sin(angle) + point.y * cos(angle),
-		point.z
-	};
-
-	return rotatedPoint;
-}
-
-vec3_t rotate_around_y(vec3_t point, float angle) {
-	vec3_t rotatedPoint = {
-		point.x * cos(angle) - point.z * sin(angle),
-		point.y,
-		point.x * sin(angle) + point.z * cos(angle)
-	};
-
-	return rotatedPoint;
-}
-
 vec2_t orthographic_projection(vec3_t point) {
 	vec2_t projected_point = { point.x * fov_scale, point.y * fov_scale };
 	return projected_point;
@@ -107,8 +86,10 @@ void update(void) {
 	{
 		vec3_t point = cube_points[i];
 
-		// Rotate the point around the Z-axis
+		// Rotate object in 3 axis
+		point = rotate_around_x(point, angle);
 		point = rotate_around_y(point, angle);
+		point = rotate_around_z(point, angle);
 
 		point.x += camera_position.x;
 		point.y += camera_position.y;

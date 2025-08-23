@@ -4,6 +4,8 @@
         "display.h": "c",
         "stdint.h": "c",
         "stdbool.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "vector.h": "c",
+        "math.h": "c"
     }
 }

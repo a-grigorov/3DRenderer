@@ -5,16 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Renderer",
+            "name": "C/C++: gcc build and debug active file",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/renderer",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "lldb"
+            "MIMode": "lldb",
+            "preLaunchTask": "C/C++: gcc build active file"
         }
     ]
 }

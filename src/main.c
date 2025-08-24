@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_timer.h>
 
 const int CUBE_SIZE = 9; // 3x3x3 grid
 const int N_POINTS = CUBE_SIZE * CUBE_SIZE * CUBE_SIZE; // Total number of points in the cube
@@ -79,8 +80,10 @@ vec2_t perspective_projection(vec3_t point) {
 }
 
 void update(void) {
+	SDL_Delay(FRAME_TARGET_TIME);
 
-	float angle = SDL_GetTicks() * 0.001f; // Rotate based on time
+	int current_frame = SDL_GetTicks();
+	float angle = current_frame * 0.001f; // Rotate based on time
 
 	for (size_t i = 0; i < N_POINTS; i++)
 	{

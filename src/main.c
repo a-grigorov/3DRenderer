@@ -9,12 +9,39 @@
 
 const int CUBE_SIZE = 9; // 3x3x3 grid
 const int N_POINTS = CUBE_SIZE * CUBE_SIZE * CUBE_SIZE; // Total number of points in the cube
+const int CUBE_FACES = 12; // Number of faces in a cube
+const int CUBE_VERTICES = 8; // Number of vertices in a cube
+
+typedef struct {
+	int a;
+	int b;
+	int c;
+} face_t;
 
 bool is_running = false;
 float fov_scale = 250.0f;
 vec3_t camera_position = { 0, 0, -2 };
 vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
+vec3_t cube_vertices[CUBE_VERTICES] = {
+	{ -1, -1, -1 },
+	{  1, -1, -1 },
+	{  1,  1, -1 },
+	{ -1,  1, -1 },
+	{ -1, -1,  1 },
+	{  1, -1,  1 },
+	{  1,  1,  1 },
+	{ -1,  1,  1 }
+};
+
+face_t cube_faces[CUBE_FACES] = {
+	{ 0, 1, 2 }, { 0, 2, 3 }, // Back face
+	{ 4, 5, 6 }, { 4, 6, 7 }, // Front face
+	{ 0, 1, 5 }, { 0, 5, 4 }, // Bottom face
+	{ 2, 3, 7 }, { 2, 7, 6 }, // Top face
+	{ 1, 2, 6 }, { 1, 6, 5 }, // Right face
+	{ 0, 3, 7 }, { 0, 7, 4 }  // Left face
+};
 
 void setup_cube_points(void) {
 	float step = 2 / (float)(CUBE_SIZE - 1); // Step size to fill the range [-1, 1]
@@ -85,14 +112,14 @@ void update(void) {
 	int current_frame = SDL_GetTicks();
 	float angle = current_frame * 0.001f; // Rotate based on time
 
-	for (size_t i = 0; i < N_POINTS; i++)
+	for (size_t i = 0; i < CUBE_VERTICES; i++)
 	{
-		vec3_t point = cube_points[i];
+		vec3_t point = cube_vertices[i];
 
 		// Rotate object in 3 axis
-		point = rotate_around_x(point, angle);
+		// point = rotate_around_x(point, angle);
 		point = rotate_around_y(point, angle);
-		point = rotate_around_z(point, angle);
+		// point = rotate_around_z(point, angle);
 
 		point.x += camera_position.x;
 		point.y += camera_position.y;
@@ -107,12 +134,30 @@ void update(void) {
 }
 
 void render(void) {
-	draw_grid(0x0000FFFF);
+	// draw_grid(0x0000FFFF);
 
-	for (size_t i = 0; i < N_POINTS; i++)
-	{
-		vec2_t point = projected_points[i];
-		draw_rect(point.x, point.y, 5, 5, 0xFFFF00FF);
+	// for (size_t i = 0; i < N_POINTS; i++)
+	// {
+	// 	vec2_t point = projected_points[i];
+	// 	draw_rect(point.x, point.y, 5, 5, 0xFFFF00FF);
+	// }
+
+	const int point_size = 4;
+
+	for (size_t i = 0; i < CUBE_VERTICES; i++) {
+		vec2_t p = projected_points[i];
+		draw_rect(p.x - point_size, p.y - point_size, point_size * 2, point_size * 2, 0xFF00FFFF);
+	}
+
+	for (size_t i = 0; i < CUBE_FACES; i++) {
+		face_t face = cube_faces[i];
+		vec2_t p1 = projected_points[face.a];
+		vec2_t p2 = projected_points[face.b];
+		vec2_t p3 = projected_points[face.c];
+
+		draw_line(p1.x, p1.y, p2.x, p2.y, 0xFFFFFFFF);
+		draw_line(p2.x, p2.y, p3.x, p3.y, 0xFFFFFFFF);
+		draw_line(p3.x, p3.y, p1.x, p1.y, 0xFFFFFFFF);
 	}
 
 	render_color_buffer();

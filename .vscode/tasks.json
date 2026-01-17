@@ -9,11 +9,11 @@
                 "-std=c99",
                 "-g",
                 "${workspaceFolder}/src/*.c",
-                "-o",
-                "${workspaceFolder}/renderer",
-                "-I/opt/homebrew/include/",
-                "-L/opt/homebrew/lib",
+                "-I/${workspaceFolder}/SDL3-3.4.0/include/",
+                "-L/${workspaceFolder}/SDL3-3.4.0/lib/",
                 "-lSDL3",
+                "-Wl,-rpath,@executable_path/SDL3-3.4.0/lib",
+                "-o${workspaceFolder}/renderer",
             ],
             "options": {
                 "cwd": "${fileDirname}"

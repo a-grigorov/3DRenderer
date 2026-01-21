@@ -1,4 +1,5 @@
 #include "display.h"
+#include <math.h>
 #include "vector.h"
 #include <stdio.h>
 #include <stdbool.h>
@@ -133,6 +134,23 @@ void update(void) {
 	}
 }
 
+void debug_draw_lines(void) {
+	// float angle = SDL_GetTicks() * 0.001f;
+	// angle = fmodf(angle, 2.0f * M_PI);
+
+	for(u_int8_t i = 0; i < 8; i++) {
+		float angle = i * M_PI / 4;
+		int origin_x = 600;
+		int origin_y = 600;
+		int circle_pos_x = (400 - origin_x) * cos(angle) - (400 - origin_y) * sin(angle);
+		int circle_pos_y = (400 - origin_y) * cos(angle) + (400 - origin_x) * sin(angle);
+		circle_pos_x += origin_x;
+		circle_pos_y += origin_y;
+
+		draw_line(origin_x, origin_y, circle_pos_x, circle_pos_y, 0xFFFF00FF); // yellow line
+	}
+}
+
 void render(void) {
 	// draw_grid(0x0000FFFF);
 
@@ -149,15 +167,17 @@ void render(void) {
 		draw_rect(p.x - point_size, p.y - point_size, point_size * 2, point_size * 2, 0xFF00FFFF);
 	}
 
+	// debug_draw_lines();
+
 	for (size_t i = 0; i < CUBE_FACES; i++) {
 		face_t face = cube_faces[i];
 		vec2_t p1 = projected_points[face.a];
 		vec2_t p2 = projected_points[face.b];
 		vec2_t p3 = projected_points[face.c];
 
-		draw_line(p1.x, p1.y, p2.x, p2.y, 0xFFFFFFFF);
-		draw_line(p2.x, p2.y, p3.x, p3.y, 0xFFFFFFFF);
-		draw_line(p3.x, p3.y, p1.x, p1.y, 0xFFFFFFFF);
+		draw_line(p1.x, p1.y, p2.x, p2.y, 0xFF00FFFF);
+		draw_line(p2.x, p2.y, p3.x, p3.y, 0xFF00FFFF);
+		draw_line(p3.x, p3.y, p1.x, p1.y, 0xFF00FFFF);
 	}
 
 	render_color_buffer();

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
+#include "line.h"
 
 int window_width = 800;
 int window_height = 600;
@@ -9,6 +10,7 @@ SDL_Renderer* renderer = NULL;
 
 uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
+LineAlgorithm current_line_algorithm = WU;
 
 bool initialize_window(void) {
 	fprintf(stdout, "Window Initialization");
@@ -134,27 +136,16 @@ void draw_rect(int pos_x, int pos_y, int width, int height, uint32_t color) {
 	}
 }
 
-// TODO: Implement width parameter
 void draw_line(int x0, int y0, int x1, int y1, uint32_t color) {
-	int dx = abs(x1 - x0);
-	int dy = abs(y1 - y0);
-	int sx = (x0 < x1) ? 1 : -1;
-	int sy = (y0 < y1) ? 1 : -1;
-	int err = dx - dy;
-
-	while (true) {
-		draw_pixel(x0, y0, color);
-
-		if (x0 == x1 && y0 == y1) break;
-		int err2 = err * 2;
-		if (err2 > -dy) {
-			err -= dy;
-			x0 += sx;
-		}
-		if (err2 < dx) {
-			err += dx;
-			y0 += sy;
-		}
+	switch (current_line_algorithm)
+	{
+		default:
+		case BRESENHAM:
+			draw_line_bresenham(x0, y0, x1, y1, color);
+			break;
+		case WU:
+			draw_line_wu(x0, y0, x1, y1, color);
+			break;
 	}
 }
 

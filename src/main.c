@@ -7,60 +7,12 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_timer.h>
-
-const int CUBE_SIZE = 9; // 3x3x3 grid
-const int N_POINTS = CUBE_SIZE * CUBE_SIZE * CUBE_SIZE; // Total number of points in the cube
-const int CUBE_FACES = 12; // Number of faces in a cube
-const int CUBE_VERTICES = 8; // Number of vertices in a cube
-
-typedef struct {
-	int a;
-	int b;
-	int c;
-} face_t;
+#include "mesh.h"
 
 bool is_running = false;
 float fov_scale = 250.0f;
 vec3_t camera_position = { 0, 0, -2 };
-vec3_t cube_points[N_POINTS];
-vec2_t projected_points[N_POINTS];
-vec3_t cube_vertices[CUBE_VERTICES] = {
-	{ -1, -1, -1 },
-	{  1, -1, -1 },
-	{  1,  1, -1 },
-	{ -1,  1, -1 },
-	{ -1, -1,  1 },
-	{  1, -1,  1 },
-	{  1,  1,  1 },
-	{ -1,  1,  1 }
-};
-
-face_t cube_faces[CUBE_FACES] = {
-	{ 0, 1, 2 }, { 0, 2, 3 }, // Back face
-	{ 4, 5, 6 }, { 4, 6, 7 }, // Front face
-	{ 0, 1, 5 }, { 0, 5, 4 }, // Bottom face
-	{ 2, 3, 7 }, { 2, 7, 6 }, // Top face
-	{ 1, 2, 6 }, { 1, 6, 5 }, // Right face
-	{ 0, 3, 7 }, { 0, 7, 4 }  // Left face
-};
-
-void setup_cube_points(void) {
-	float step = 2 / (float)(CUBE_SIZE - 1); // Step size to fill the range [-1, 1]
-	size_t index = 0;
-
-	for (size_t x = 0; x < CUBE_SIZE; x++) {
-		for (size_t y = 0; y < CUBE_SIZE; y++) {
-			for (size_t z = 0; z < CUBE_SIZE; z++) {
-				vec3_t point;
-				point.x = (x * step) - 1;
-				point.y = (y * step) - 1;
-				point.z = (z * step) - 1;
-				cube_points[index] = point;
-				index++;
-			}
-		}
-	}
-}
+vec2_t projected_points[N_MESH_VERTICES];
 
 void setup(void) {
 	// Allocate memory for collor buffer
@@ -74,9 +26,6 @@ void setup(void) {
 		window_width,
 		window_height
 	);
-
-	// Fill the cube_points array with points in the range [-1, 1]
-	setup_cube_points();
 }
 
 void process_input(void) {
@@ -113,14 +62,14 @@ void update(void) {
 	int current_frame = SDL_GetTicks();
 	float angle = current_frame * 0.001f; // Rotate based on time
 
-	for (size_t i = 0; i < CUBE_VERTICES; i++)
+	for (size_t i = 0; i < N_MESH_VERTICES; i++)
 	{
-		vec3_t point = cube_vertices[i];
+		vec3_t point = mesh_vertices[i];
 
 		// Rotate object in 3 axis
-		// point = rotate_around_x(point, angle);
+		point = rotate_around_x(point, angle);
 		point = rotate_around_y(point, angle);
-		// point = rotate_around_z(point, angle);
+		point = rotate_around_z(point, angle);
 
 		point.x += camera_position.x;
 		point.y += camera_position.y;
@@ -152,25 +101,17 @@ void debug_draw_lines(void) {
 }
 
 void render(void) {
-	// draw_grid(0x0000FFFF);
-
-	// for (size_t i = 0; i < N_POINTS; i++)
-	// {
-	// 	vec2_t point = projected_points[i];
-	// 	draw_rect(point.x, point.y, 5, 5, 0xFFFF00FF);
-	// }
-
 	const int point_size = 4;
 
-	for (size_t i = 0; i < CUBE_VERTICES; i++) {
+	for (size_t i = 0; i < N_MESH_VERTICES; i++) {
 		vec2_t p = projected_points[i];
 		draw_rect(p.x - point_size, p.y - point_size, point_size * 2, point_size * 2, 0xFF00FFFF);
 	}
 
 	// debug_draw_lines();
 
-	for (size_t i = 0; i < CUBE_FACES; i++) {
-		face_t face = cube_faces[i];
+	for (size_t i = 0; i < N_MESH_VERTICES; i++) {
+		face_t face = mesh_faces[i];
 		vec2_t p1 = projected_points[face.a];
 		vec2_t p2 = projected_points[face.b];
 		vec2_t p3 = projected_points[face.c];

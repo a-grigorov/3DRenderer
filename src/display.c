@@ -10,7 +10,7 @@ SDL_Renderer* renderer = NULL;
 
 uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
-LineAlgorithm current_line_algorithm = WU;
+LineAlgorithm current_line_algorithm = BRESENHAM;
 
 bool initialize_window(void) {
 	fprintf(stdout, "Window Initialization");
